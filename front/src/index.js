@@ -1,14 +1,16 @@
+import axios from 'axios';
 import Router from 'vanilla-router';
+
 import SignInController from './controllers/singin';
 import SingUpController from './controllers/singup';
 import DashboardController from './controllers/dashboard';
 import PatientController from './controllers/patient';
 import EmployeeController from './controllers/employee';
 import PartnerController from './controllers/partner';
-
 import AdminPartnerController from './controllers/admin-partners';
 import AdminEmployeeController from './controllers/admin-employees';
 import AdminPatientsController from './controllers/admin-patients';
+
 import './bootstrap-sb-admin.scss';
 import './index.scss';
 
@@ -44,7 +46,14 @@ router.add('/employee', () => {
 });
 
 router.add('/admin-patients', () => {
-  new AdminPatientsController();
+  const host = 'http://localhost:3000/';
+  axios.get(`${host}auth`)
+    .then(() => {
+      new AdminPatientsController();
+    })
+    .catch(() => {
+      router.navigateTo('/singin');
+    });
 });
 
 router.add('/admin-employees', () => {

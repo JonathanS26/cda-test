@@ -10,6 +10,7 @@ import helmet from 'helmet';
 // Core
 import config from './config.js';
 import routes from './controllers/routes.js';
+import authenicateToken from './helpers/authenicate-token.js';
 
 const Server = class Server {
   constructor () {
@@ -25,6 +26,7 @@ const Server = class Server {
   }
 
   routes () {
+    new routes.Auth(this.app, authenicateToken);
     new routes.Users(this.app);
     new routes.Dashboard(this.app);
     new routes.Employees(this.app);
