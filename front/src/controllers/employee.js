@@ -1,6 +1,6 @@
 import validator from 'validator';
 import { displayErrorMessages } from '../helpers';
-import ViewPage from '../views/page';
+import ControllerPage from './page';
 import ViewEmployee from '../views/employee';
 
 const Employee = class Employee {
@@ -111,9 +111,8 @@ const Employee = class Employee {
   }
 
   run() {
-    const viewPage = new ViewPage();
     const viewEmployee = new ViewEmployee();
-    document.body.innerHTML = viewPage.render(viewEmployee.render());
+    new ControllerPage(viewEmployee.render());
 
     this.onHandleClick();
   }

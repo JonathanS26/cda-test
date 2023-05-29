@@ -9,7 +9,7 @@ const Partners = class Partners {
 
     this.run();
   }
-
+c
   all () {
     this.app.get('/partners', (req, res) => {
       try {

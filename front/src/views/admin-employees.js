@@ -1,5 +1,5 @@
 const AdminEmployees = class AdminEmployees {
-  renderEmployee(employee) {
+  renderEmployee(employees) {
     const {
       id,
       firstName,
@@ -7,7 +7,7 @@ const AdminEmployees = class AdminEmployees {
       cellPhone,
       email,
       level
-    } = employee;
+    } = employees;
 
     return `
       <tr>
@@ -31,9 +31,7 @@ const AdminEmployees = class AdminEmployees {
     `;
   }
 
-  render(data) {
-    const { employees } = data;
-
+  render(datas) {
     return `
       <div class="row">
         <table class="table table-dark table-striped">
@@ -50,7 +48,7 @@ const AdminEmployees = class AdminEmployees {
             </tr>
           </thead>
           <tbody>
-            ${employees.map((employee) => this.renderEmployee(employee)).join('')}
+            ${datas.map((employees) => this.renderEmployee(employees)).join('')}
           </tbody>
         </table>
       </div>

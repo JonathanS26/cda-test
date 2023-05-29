@@ -1,5 +1,5 @@
 const AdminPatients = class AdminPatients {
-  renderPatient(patient) {
+  renderPatient(patients) {
     const {
       id,
       firstName,
@@ -7,7 +7,7 @@ const AdminPatients = class AdminPatients {
       cellPhone,
       email,
       accidentType
-    } = patient;
+    } = patients;
 
     return `
       <tr>
@@ -31,9 +31,7 @@ const AdminPatients = class AdminPatients {
     `;
   }
 
-  render(data) {
-    const { patients } = data;
-
+  render(datas) {
     return `
       <div class="row">
         <table class="table table-dark table-striped">
@@ -50,7 +48,7 @@ const AdminPatients = class AdminPatients {
             </tr>
           </thead>
           <tbody>
-            ${patients.map((patient) => this.renderPatient(patient)).join('')}
+            ${datas.map((patients) => this.renderPatient(patients)).join('')}
           </tbody>
         </table>
       </div>

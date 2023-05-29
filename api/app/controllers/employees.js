@@ -10,7 +10,6 @@ const Employees = class Employees {
     this.run();
   }
 
-
   all () {
     this.app.get('/employees', (req, res) => {
       try {

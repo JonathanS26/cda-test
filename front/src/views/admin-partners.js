@@ -1,5 +1,5 @@
 const AdminPartners = class AdminPartners {
-  renderPartner(partner) {
+  renderPartner(partners) {
     const {
       id,
       firstName,
@@ -7,7 +7,7 @@ const AdminPartners = class AdminPartners {
       cellPhone,
       email,
       job
-    } = partner;
+    } = partners;
 
     return `
       <tr>
@@ -31,9 +31,7 @@ const AdminPartners = class AdminPartners {
     `;
   }
 
-  render(data) {
-    const { partners } = data;
-
+  render(datas) {
     return `
       <div class="row">
         <table class="table table-dark table-striped">
@@ -50,7 +48,7 @@ const AdminPartners = class AdminPartners {
             </tr>
           </thead>
           <tbody>
-            ${partners.map((partner) => this.renderPartner(partner)).join('')}
+            ${datas.map((partners) => this.renderPartner(partners)).join('')}
           </tbody>
         </table>
       </div>

@@ -1,6 +1,6 @@
 import validator from 'validator';
 import { displayErrorMessages } from '../helpers';
-import ViewPage from '../views/page';
+import ControllerPage from './page';
 import ViewPatient from '../views/patient';
 
 const Patient = class Patient {
@@ -142,9 +142,8 @@ const Patient = class Patient {
   }
 
   run() {
-    const viewPage = new ViewPage();
     const viewPatient = new ViewPatient();
-    document.body.innerHTML = viewPage.render(viewPatient.render());
+    new ControllerPage(viewPatient.render());
 
     this.onHandleClick();
   }

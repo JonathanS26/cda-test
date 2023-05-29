@@ -1,6 +1,6 @@
 import validator from 'validator';
 import { displayErrorMessages } from '../helpers';
-import ViewPage from '../views/page';
+import ControllerPage from './page';
 import ViewPartner from '../views/partner';
 
 const Partner = class Partner {
@@ -119,9 +119,8 @@ const Partner = class Partner {
   }
 
   run() {
-    const viewPage = new ViewPage();
     const viewPartner = new ViewPartner();
-    document.body.innerHTML = viewPage.render(viewPartner.render());
+    new ControllerPage(viewPartner.render());
 
     this.onHandleClick();
   }

@@ -1,41 +1,29 @@
+import axios from 'axios';
+
+import ControllerPage from './page';
 import ViewAdminPartners from '../views/admin-partners';
-import ViewPage from '../views/page';
 
 const AdminPartners = class AdminPartners {
   constructor() {
-    this.dataMock = {
-      partners: [{
-        id: '1',
-        firstName: 'Otto',
-        lastName: 'Mark',
-        cellPhone: '0606060606',
-        email: 'mark@gmail.com',
-        job: 'Avocat'
-      }, {
-        id: '2',
-        firstName: 'Marie',
-        lastName: 'Dupuis',
-        cellPhone: '0620658547',
-        email: 'marie@gmail.com',
-        job: 'Avocat'
-      }, {
-        id: '3',
-        firstName: 'David',
-        lastName: 'Dubois',
-        cellPhone: '0669542588',
-        email: 'david@gmail.com',
-        job: 'Médecin Assurance'
-      }]
-    };
-
     this.run();
   }
 
-  run() {
-    const viewPage = new ViewPage();
-    const viewAdminPartners = new ViewAdminPartners();
+  getAll(callback) {
+    const host = 'http://localhost:3000/';
+    axios.get(`${host}partners`)
+      .then((response) => {
+        callback(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
 
-    document.body.innerHTML = viewPage.render(viewAdminPartners.render(this.dataMock));
+  run() {
+    this.getAll((partners) => {
+      const viewAdminPartners = new ViewAdminPartners();
+      new ControllerPage(viewAdminPartners.render(partners));
+    });
   }
 };
 

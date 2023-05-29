@@ -20,12 +20,9 @@ const Dashboard = class Dashboard {
   }
 
   run() {
-    const controllerPage = new ControllerPage();
-    const viewDashboard = new ViewDashboard();
-
     this.getStats((stats) => {
-      console.log(stats);
-      controllerPage.run(viewDashboard.render(stats));
+      const viewDashboard = new ViewDashboard();
+      new ControllerPage(viewDashboard.render(stats));
     });
   }
 };

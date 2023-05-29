@@ -20,13 +20,12 @@ const Dashboard = class Dashboard {
   }
 
   render(datas) {
-    console.log(datas.map((block) => this.renderBlock(block.title, block.stats)).join(''));
     return `
       <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Tableau de bord</h1>
       </div>
       <div class="row">
-        ${datas.map((block) => this.renderBlock(block.title, block.stats)).join('')}
+        ${datas.map((stats) => this.renderBlock(stats.title, stats.stats)).join('')}
       </div>
     `;
   }
