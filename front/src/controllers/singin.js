@@ -72,7 +72,6 @@ const SignIn = class SignIn {
   }
 
   // La méthode 'run' est exécutée lorsque l'objet SignIn est créé.
-  // Elle affiche la vue SignIn et associe l'événement de clic au bouton de soumission du formulaire.
   run() {
     const viewSignIn = new ViewSignIn();
     document.body.innerHTML = viewSignIn.render();

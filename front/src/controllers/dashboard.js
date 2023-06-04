@@ -4,7 +4,8 @@ import ControllerPage from './page';
 import ViewDashboard from '../views/dashboard';
 
 const Dashboard = class Dashboard {
-  constructor() {
+  constructor(router) {
+    this.router = router;
     this.run();
   }
 
@@ -22,7 +23,7 @@ const Dashboard = class Dashboard {
   run() {
     this.getStats((stats) => {
       const viewDashboard = new ViewDashboard();
-      new ControllerPage(viewDashboard.render(stats));
+      new ControllerPage(viewDashboard.render(stats), this.router);
     });
   }
 };

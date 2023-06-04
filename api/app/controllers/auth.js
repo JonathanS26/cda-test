@@ -46,7 +46,7 @@ const Auth = class Auth {
         const userMock = {
           firstName: 'Jonathan',
           lastName: 'Senouf',
-          status: 'admin',
+          status: 'admin', //guest
           email: 'jonathan.senouf@gmail.com',
           password: '12345'
         };

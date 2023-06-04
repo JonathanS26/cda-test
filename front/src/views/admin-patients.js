@@ -34,6 +34,7 @@ const AdminPatients = class AdminPatients {
   render(datas) {
     return `
       <div class="row">
+      <div class="table-responsive">
         <table class="table table-dark table-striped">
           <thead>
             <tr>
@@ -51,6 +52,7 @@ const AdminPatients = class AdminPatients {
             ${datas.map((patients) => this.renderPatient(patients)).join('')}
           </tbody>
         </table>
+        </div>
       </div>
     `;
   }

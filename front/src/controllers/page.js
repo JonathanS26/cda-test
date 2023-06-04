@@ -1,11 +1,23 @@
+import CookieJS from 'js-cookie';
+
 import ViewPage from '../views/page';
 
 import { apiGetMe } from '../helpers';
 
 const Page = class Page {
-  constructor(content) {
+  constructor(content, router) {
+    this.router = router;
     this.content = content;
     this.run();
+  }
+
+  // pour se deconecter
+  onHandleClick() {
+    const elButton = document.querySelector('exit-button');
+    elButton.addEventListener('click', () => {
+      CookieJS.remove('token');
+      this.router.navigateTo('/signin');
+    });
   }
 
   run() {
@@ -21,6 +33,7 @@ const Page = class Page {
       });
 
       document.body.innerHTML = viewPage.render(this.content);
+      this.onHandleClick();
     });
   }
 };
