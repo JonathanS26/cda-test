@@ -46,7 +46,7 @@ const Auth = class Auth {
         const userMock = {
           firstName: 'Jonathan',
           lastName: 'Senouf',
-          status: 'admin', //guest
+          role: 'guest', //guest || admin
           email: 'jonathan.senouf@gmail.com',
           password: '12345'
         };
@@ -58,7 +58,7 @@ const Auth = class Auth {
             firstName:  userMock.firstName,
             lastName: userMock.lastName,
             email: userMock.email,
-            status: userMock.status
+            role: userMock.role
           }, 'J0n@thAn1', { expiresIn: '24h' });
 
           // Envoie une réponse avec un statut 200 (OK) au client, contenant le token.

@@ -17,7 +17,7 @@ const Users = class Users {
           res.status(200).json( {
             firstName: 'Jonathan',
             lastName: 'Senouf',
-            status: 'admin',
+            role: 'guest',
             email: 'jonathan.senouf@gmail.com',
             avatarUrl: 'https://i.pravatar.cc/300'
           });

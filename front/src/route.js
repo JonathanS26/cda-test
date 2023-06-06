@@ -15,25 +15,29 @@ class Route {
   }
 
   checkAuthentication() {
-    if (this.status === 'private') { // private OK
-      const token = CookieJS.get('jwtToken'); // cree token OK
+    if (this.status === 'private') {
+      const token = CookieJS.get('jwtToken');
 
-      this.router.add(this.path, () => { // cree route /dashboard OK
-        axios.get(`${this.host}auth`, { // cree route
+      this.router.add(this.path, () => {
+        axios.get(`${this.host}auth`, {
           headers: {
             authorization: token
           }
         })
           .then((response) => {
-            const { status } = response.data;
+            const { role } = response.data;
 
-            if (status === this.role) {
-              new this.Controller(this.router);
-
-              return;
+            if (this.role === 'guest') {
+              if (role === 'guest' || role === 'admin') {
+                new this.Controller(this.router);
+              }
             }
 
-            this.router.navigateTo('/dashboard');
+            if (this.role === 'admin' && role === 'admin') {
+              new this.Controller(this.router);
+
+              console.log('admin');
+            }
           })
           .catch(() => {
             this.router.navigateTo('/singin');

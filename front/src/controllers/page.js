@@ -1,7 +1,8 @@
 import CookieJS from 'js-cookie';
+import 'startbootstrap-sb-admin-2/vendor/bootstrap/js/bootstrap.bundle';
 
 import ViewPage from '../views/page';
-
+import sbAdmin2 from '../vendor/sb-admin-2';
 import { apiGetMe } from '../helpers';
 
 const Page = class Page {
@@ -14,6 +15,7 @@ const Page = class Page {
   // pour se deconecter
   onHandleClick() {
     const elButton = document.querySelector('exit-button');
+
     elButton.addEventListener('click', () => {
       CookieJS.remove('token');
       this.router.navigateTo('/signin');
@@ -33,6 +35,8 @@ const Page = class Page {
       });
 
       document.body.innerHTML = viewPage.render(this.content);
+
+      sbAdmin2();
       this.onHandleClick();
     });
   }
