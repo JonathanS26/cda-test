@@ -9,9 +9,6 @@ const Dashboard = class Dashboard {
                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">${title}</div>
                 <div class="h5 mb-0 font-weight-bold text-gray-800">${stats}</div>
               </div>
-              <div class="col-auto">
-                  <i class="fas fa-user-circle fa-2x text-gray-300"></i>
-              </div>
             </div>
           </div>
         </div>

@@ -24,9 +24,6 @@ const Dashboard = class Dashboard {
             }, {
               title: 'nombre de employés',
               stats: 88956
-            }, {
-              title: 'nombre de rapports',
-              stats: 2285
             }
           ]);
         }  catch (err) {

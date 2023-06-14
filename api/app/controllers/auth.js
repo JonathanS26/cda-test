@@ -1,32 +1,65 @@
-// Impore du package 'jsonwebtoken', communément appelé jwt, qui fournit des méthodes utilisées pour travailler avec JSON Web Token (JWT)
+// Import des modules nécessaires
 import jwt from 'jsonwebtoken';
+import { DataTypes } from 'sequelize';
 
-// Definition de la classe Auth
+// Déclaration de la classe Auth
 const Auth = class Auth {
-  // Le constructeur est appelé lorsqu'un nouvel objet de cette classe est créé.
-  // Il prend deux paramètres : une instance d'application express et une fonction authenicateToken.
-  constructor (app, authenicateToken) {
-    // Les deux paramètres passés au constructeur sont enregistrés dans l'instance de cette classe.
-    this.app = app;
-    this.authenicateToken = authenicateToken;
 
-    // Exécute la méthode 'run' après que l'objet ait été créé.
+  constructor (app, authenticateToken, connect) {
+    // Assigner les valeurs aux propriétés de l'instance
+    this.connect = connect;
+    this.app = app;
+    this.authenticateToken = authenticateToken;
+
+    // Définir le modèle User avec les attributs de la table correspondante
+    this.User = connect.define('User', {
+      firstName: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      lastName: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      id_role: {
+        type: DataTypes.INTEGER,
+        validate: {
+          isIn: [[1, 2]]
+        }
+      },
+      email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+        validate: {
+          isEmail: true
+        }
+      },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: false
+      }
+    }, {
+        timestamps: false,
+        createdAt: false,
+        updatedAt: false
+    });
+
+    // Appeler la méthode run pour démarrer l'exécution des fonctionnalités d'authentification
     this.run();
   }
 
-  // Méthode pour vérifier le token. Elle associe une fonction à la route '/auth' en méthode GET.
+  // Méthode pour vérifier le jeton d'authentification (checkToken)
   checkToken () {
-    // .get est une méthode d'express qui prend une route et une fonction comme paramètres. La fonction est appelée lorsque la route est atteinte en méthode GET.
-    // this.authenicateToken est une fonction qui sera utilisée comme middleware pour authentifier les requêtes entrantes en utilisant un token JWT.
-    this.app.get('/auth', this.authenicateToken, (req, res) => {
+    // Définition de la route pour la vérification du jeton d'authentification
+    this.app.get('/auth', this.authenticateToken, (req, res) => {
       try { 
-        // Si l'authentification réussit, elle renvoie les informations de l'utilisateur.
+        // Renvoyer les informations de l'utilisateur contenues dans le jeton (req.user) en tant que réponse
         res.status(200).json(req.user);
       }  catch (err) {
-        // Si une erreur se produit, elle est affichée dans la console et un message d'erreur est renvoyé au client.
         console.error(`[ERROR] auth -> ${err}`);
 
-        // Envoie une réponse avec un statut 401 (non autorisé) au client.
+        // En cas d'erreur, renvoyer une réponse d'erreur avec le code 401 (non autorisé) et un message approprié
         res.status(401).json({
           code: 401,
           message: 'Unauthorized'
@@ -34,42 +67,53 @@ const Auth = class Auth {
       }
     });
   }
+  
 
-  // Méthode pour se connecter à l'application. Elle associe une fonction à la route '/auth/signin' en méthode GET.
-  signin () {
-    this.app.get('/auth/signin', (req, res) => {
+  // Méthode pour gérer la demande de connexion (signin)
+  signin = () => {
+    // Définition de la route pour la demande de connexion (signin)
+    this.app.get('/auth/signin', async (req, res) => {
       try {
-        // Récupère les paramètres email et password de la requête.
+        // Récupérer l'email et le mot de passe depuis l'URL
         const { email, password } = req.query;
+       
+        // Rechercher l'utilisateur dans la base de données avec l'email et le mot de passe correspondants
+        const user = await this.User.findAll({
+          where: {email, password},
+          raw: true // Récupérer les résultats sous forme d'objets JavaScript bruts
+        });
 
-        // Crée un utilisateur fictif pour simuler une authentification.
-        const userMock = {
-          firstName: 'Jonathan',
-          lastName: 'Senouf',
-          role: 'guest', //guest || admin
-          email: 'jonathan.senouf@gmail.com',
-          password: '12345'
-        };
-
-        // Si l'email et le mot de passe fournis correspondent à ceux de l'utilisateur fictif, un token JWT est créé et renvoyé.
-        if (email === userMock.email && password === userMock.password) {
-          // Création du token avec la méthode jwt.sign, qui prend un objet avec les informations à inclure dans le token, une clé secrète et une option avec la durée de validité du token.
-          const token = jwt.sign({
-            firstName:  userMock.firstName,
-            lastName: userMock.lastName,
-            email: userMock.email,
-            role: userMock.role
-          }, 'J0n@thAn1', { expiresIn: '24h' });
-
-          // Envoie une réponse avec un statut 200 (OK) au client, contenant le token.
-          res.status(200).json({
-            token
+        // Vérifier si aucun utilisateur correspondant n'a été trouvé
+        if (!user.length) {
+          res.status(401).json({
+            code: 401,
+            message: 'Email ou mot de passe inconnu'
           });
+          return;
         }
+        console.log("user :");
+        console.log(user.length);
+
+        // Récupérer le premier utilisateur trouvé
+        const User  = user[0];
+
+        // Créer le jeton JWT avec les données de l'utilisateur
+        const token = jwt.sign({
+          firstName:  User.firstName,
+          lastName: User.lastName,
+          email: User.email,
+          role: User.role
+        }, 'J0n@thAn1', { expiresIn: '24h' });
+
+        // Envoyer le jeton JWT dans la réponse
+        res.status(200).json({
+          token
+        });
+      
       }  catch (err) {
+        // En cas d'erreur, renvoyer une réponse d'erreur
         console.error(`[ERROR] auth/signin -> ${err}`);
 
-        // Si une erreur se produit pendant le processus, elle est affichée dans la console et un message d'erreur est renvoyé au client.
         res.status(401).json({
           code: 401,
           message: 'Unauthorized'
@@ -78,13 +122,12 @@ const Auth = class Auth {
     });
   }
 
-  // La méthode 'run' appelle simplement les méthodes 'checkToken' et 'signin', ce qui associe les routes '/auth' et '/auth/signin' à leurs fonctions correspondantes lors de la création d'une nouvelle instance de la classe Auth.
+  // Méthode pour exécuter les fonctionnalités d'authentification
   run () {
     this.checkToken();
     this.signin();
   }
 }
 
-// La classe Auth est ensuite exportée pour être utilisée dans d'autres parties de l'application.
 export default Auth;
   

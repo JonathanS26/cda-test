@@ -6,12 +6,12 @@ const Patient = class Patient {
     </div>
     <form id="form-patient">
       <div class="form-group">
-        <label for="lastName">Nom</label>
-        <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Nom" >
-      </div>
-      <div class="form-group">
         <label for="firstName">Prénom</label>
         <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Prénom">
+      </div>
+      <div class="form-group">
+        <label for="lastName">Nom</label>
+        <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Nom" >
       </div>
       <div class="form-group">
         <label for="email">Email</label>

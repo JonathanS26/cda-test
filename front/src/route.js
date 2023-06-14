@@ -16,9 +16,8 @@ class Route {
 
   checkAuthentication() {
     if (this.status === 'private') {
-      const token = CookieJS.get('jwtToken');
-
       this.router.add(this.path, () => {
+        const token = CookieJS.get('jwtToken');
         axios.get(`${this.host}auth`, {
           headers: {
             authorization: token
@@ -30,14 +29,17 @@ class Route {
             if (this.role === 'guest') {
               if (role === 'guest' || role === 'admin') {
                 new this.Controller(this.router);
+
+                return;
               }
             }
 
             if (this.role === 'admin' && role === 'admin') {
               new this.Controller(this.router);
 
-              console.log('admin');
+              return;
             }
+            this.router.navigateTo('/dashboard');
           })
           .catch(() => {
             this.router.navigateTo('/singin');

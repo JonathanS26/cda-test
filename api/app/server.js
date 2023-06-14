@@ -1,5 +1,6 @@
 // Dependencies
 import express from 'express';
+import Sequelize from 'sequelize';
 
 // Dependencies middleware
 import bodyParser from 'body-parser';
@@ -18,6 +19,14 @@ const Server = class Server {
     this.config = config[process.argv[2]] || config.development;
   }
 
+  dbConnect() {
+    return new Sequelize('cda', 'user', 'password', {
+      host: '172.20.10.5',
+      dialect: 'mysql',
+      port: 3306
+    });
+  }
+
   middleware () {
     this.app.use(compression());
     this.app.use(cors());
@@ -26,12 +35,12 @@ const Server = class Server {
   }
 
   routes () {
-    new routes.Auth(this.app, authenicateToken);
+    new routes.Auth(this.app, authenicateToken, this.connect);
     new routes.Users(this.app);
     new routes.Dashboard(this.app);
     new routes.Employees(this.app);
     new routes.Partners(this.app);
-    new routes.Patients(this.app);
+    new routes.Patients(this.app, this.connect);
 
     this.app.use((req, res) => {
       res.status(404).json({
@@ -48,6 +57,7 @@ const Server = class Server {
 
   run () {
     try {
+      this.connect = this.dbConnect();
       this.security();
       this.middleware();
       this.routes();
