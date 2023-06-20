@@ -1,19 +1,37 @@
-const mongoose = require('mongoose')
+import { DataTypes } from 'sequelize';
+import { sequelize } from '../config/database';
+import Role from './Role';
 
-const Schema = new mongoose.Schema({
-  name: String,
-  role: String,
-  avatar: String
-}, {
-  collection: 'users',
-  minimize: false,
-  versionKey: false
-}).set('toJSON', {
-  transform: (doc, ret) => {
-    ret.id = ret._id
-
-    delete ret._id
+const User = sequelize.define('User', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true
+  },
+  firstname: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  lastname: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  email: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  id_role: {
+    type: DataTypes.INTEGER,
+    allowNull: false
   }
-})
+}, {
+  tableName: 'users',
+  timestamps: false
+});
 
-module.exports = Schema
+User.belongsTo(Role, { foreignKey: 'id_role' });
+
+export default User;

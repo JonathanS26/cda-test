@@ -1,23 +1,14 @@
 {
-  "name": "@so-xzen/chat-bot-io-v2",
+  "name": "@moi/frontend",
   "version": "1.0.0",
-  "description": "Chat Bot IO v2",
   "main": "index.js",
   "scripts": {
     "start": "npx webpack-dev-server --mode development",
     "dist": "npx webpack --mode production --progress=profile",
     "lint": "eslint ."
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/xzen/chat-bot-io-v2.git"
-  },
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/xzen/chat-bot-io-v2/issues"
-  },
-  "homepage": "https://github.com/xzen/chat-bot-io-v2#readme",
   "devDependencies": {
     "@babel/core": "^7.16.0",
     "@babel/eslint-parser": "^7.5.4",

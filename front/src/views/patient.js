@@ -18,10 +18,6 @@ const Patient = class Patient {
         <input type="email" class="form-control" id="email" name="email" placeholder="Email" >
       </div>
       <div class="form-group">
-        <label for="phone">Téléphone fixe</label>
-        <input type="tel" class="form-control" id="phone" name="phone" placeholder="Téléphone fixe" >
-      </div>
-      <div class="form-group">
         <label for="cellphone">Téléphone portable</label>
         <input type="tel" class="form-control" id="cellphone" name="cellphone" placeholder="Téléphone portable" >
       </div>
@@ -51,34 +47,6 @@ const Patient = class Patient {
           <option>Homme</option>
           <option>Femme</option>
           <option>Autre</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="nir">NIR</label>
-        <input type="text" class="form-control" id="nir" name="nir" placeholder="NIR" >
-      </div>
-      <div class="form-group">
-        <label for="insuranceRegime">Régime d'assurance</label>
-        <select class="form-control" id="insuranceRegime" name="insuranceRegime">
-          <option>Régime général</option>
-          <option>Régime agricole</option>
-          <option>Ampi</option>
-          <option>Sncf</option>
-          <option>Mgen</option>
-          <option>Cmmns</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="accidentType">Type d'accident</label>
-        <select class="form-control" id="accidentType" name="accidentType">
-          <option>Accident de la route</option>
-          <option>Accident piéton</option>
-          <option>Accident médical</option>
-          <option>Accident du travail</option>
-          <option>Accident du sport</option>
-          <option>Accident de la vie</option>
-          <option>Agression</option>
-          <option>Maltraitance</option>
         </select>
       </div>
       <button type="submit" class="btn btn-primary">Inscrire</button>

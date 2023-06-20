@@ -20,10 +20,11 @@ const Server = class Server {
   }
 
   dbConnect() {
-    return new Sequelize('cda', 'user', 'password', {
-      host: '172.20.10.5',
+    const { mysql } = this.config;
+    return new Sequelize(mysql.database, mysql.username, mysql.password, {
+      host: mysql.host,
       dialect: 'mysql',
-      port: 3306
+      port: mysql.port
     });
   }
 

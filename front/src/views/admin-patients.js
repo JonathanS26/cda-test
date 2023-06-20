@@ -2,21 +2,29 @@ const AdminPatients = class AdminPatients {
   renderPatient(patients) {
     const {
       id,
-      firstName,
+      firstname,
       lastName,
       cellPhone,
-      email,
-      accidentType
+      address,
+      dateofbirth,
+      city,
+      zip_code,
+      gender,
+      language
     } = patients;
 
     return `
       <tr>
         <td>${id}</td>
-        <td>${firstName}</td>
+        <td>${firstname}</td>
         <td>${lastName}</td>
         <td>${cellPhone}</td>
-        <td>${email}</td>
-        <td>${accidentType}</td>
+        <td>${address}</td>
+        <td>${dateofbirth}</td>
+        <td>${city}</td>
+        <td>${zip_code}</td>
+        <td>${gender}</td>
+        <td>${language}</td>
         <td>
           <div class="d-grid gap-2">
             <button class="btn btn-danger" type="button">Supprimer</button>
@@ -32,6 +40,7 @@ const AdminPatients = class AdminPatients {
   }
 
   render(datas) {
+    console.log("edd")
     return `
       <div class="row">
       <div class="table-responsive">
@@ -39,11 +48,15 @@ const AdminPatients = class AdminPatients {
           <thead>
             <tr>
               <th scope="col">Id</th>
-              <th scope="col">Nom</th>
               <th scope="col">Prénom</th>
-              <th scope="col">Téléphone</th>
-              <th scope="col">Email</th>
-              <th scope="col">Accident Type</th>
+              <th scope="col">Nom</th>
+              <th scope="col">Numéro de téléphone</th>
+              <th scope="col">Adresse</th>
+              <th scope="col">Date de naissance</th>
+              <th scope="col">Ville</th>
+              <th scope="col">Code postal</th>
+              <th scope="col">Genre</th>
+              <th scope="col">Langue</th>
               <th></th>
               <th></th>
             </tr>

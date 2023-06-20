@@ -1,4 +1,4 @@
-import { DataTypes } from 'sequelize';
+import { DataTypes, Sequelize } from 'sequelize';
 
 
 
@@ -11,60 +11,126 @@ const Patients = class Patients {
   constructor (app, connect) {
       this.app = app;
       this.connect = connect;
-      
-      this.Patient = connect.define('Patient',{
-        id: {
-          type: DataTypes.INTEGER,
-          autoIncrement: true,
-          primaryKey: true
-        },
-        firstName: {
-          type: DataTypes.STRING,
-          allowNull: false
-        },
-        lastName: {
-          type: DataTypes.STRING,
-          allowNull: false
-        },
-        email: {
-          type: DataTypes.STRING,
-          allowNull: false,
-          unique: true,
-          validate: {
-            isEmail: true
-          }
-        },
-        address: {
-          type: DataTypes.TEXT,
-          allowNull: false
-        },
-        dateofbirth: {
-          type: DataTypes.DATEONLY,
-          allowNull: false
-        },
-        id_city: {
-          type: DataTypes.INTEGER,
-          validate: {
-            isIn: [[1]]
-          }
-        },
-        id_gender: {
-          type: DataTypes.INTEGER,
-          validate: {
-            isIn: [[1,2]]
-          }
-        },
-        id_language: {
-          type: DataTypes.INTEGER,
-          validate: {
-            isIn: [[1]]
-          }
-        }
-      }, {
-        timestamps: false,
-        createdAt: false,
-        updatedAt: false
+
+
+          // Model City
+    this.City = connect.define('City',{
+      id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+      },
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      zip_code: {
+        type: DataTypes.STRING,
+        allowNull: false
+      }
+    }, {
+      timestamps: false,
+      createdAt: false,
+      updatedAt: false
     });
+
+    // Model Gender
+    this.Gender = connect.define('Gender',{
+      id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+      },
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false
+      }
+    }, {
+      timestamps: false,
+      createdAt: false,
+      updatedAt: false
+    });
+
+        
+    // Model Language
+    this.Language = connect.define('Language',{
+      id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+      },
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false
+      }
+    }, {
+      timestamps: false,
+      createdAt: false,
+      updatedAt: false
+    });
+
+
+      // Model Patient
+    this.Patient = connect.define('Patient',{
+      id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+      },
+      firstName: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      lastName: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+        validate: {
+          isEmail: true
+        }
+      },
+      address: {
+        type: DataTypes.TEXT,
+        allowNull: false
+      },
+      dateofbirth: {
+        type: DataTypes.DATEONLY,
+        allowNull: false
+      },
+      id_city: {
+        type: DataTypes.INTEGER,
+        validate: {
+          isIn: [[1]]
+        }
+      },
+      id_gender: {
+        type: DataTypes.INTEGER,
+        validate: {
+          isIn: [[1,2]]
+        }
+      },
+      id_language: {
+        type: DataTypes.INTEGER,
+        validate: {
+          isIn: [[1]]
+        }
+      }
+    }, {
+      timestamps: false,
+      createdAt: false,
+      updatedAt: false
+  });
+
+
+
+    this.Patient.belongsTo(this.City, { foreignKey: 'id_city' });
+    this.Patient.belongsTo(this.Gender, { foreignKey: 'id_gender' });
+    this.Patient.belongsTo(this.Language, { foreignKey: 'id_language' });
+
 
       this.run();
   }
@@ -73,22 +139,51 @@ const Patients = class Patients {
   getPatients = () => {
     this.app.get('/patients', async (req, res) => {
       try {
-        const patients = await this.Patient.findAll({raw: true});
+        const patients = await this.Patient.findAll({
+          attributes: ['id','firstname', 'lastname', 'email', 'address', 'dateofbirth'],
+          include: [{
+            model: this.City,
+            attributes: ['name', 'zip_code']
+          }, {
+            model: this.Gender,
+            attributes: ['name']
+          }, {
+            model: this.Language,
+            attributes: [ 'name']
+          }],
+          raw: true
+        });
 
-        if (!patients.length) {
+      
+        // Remodeler les données retournées pour renommer "City.name" en "city", "City.zip_code" en "zip_code", "Gender.name" en "gender" et "Language.name" en "language".
+        const remodeledPatients = patients.map(patient => ({
+          id: patient.id,
+          firstname: patient.firstname,
+          lastname: patient.lastname,
+          email: patient.email,
+          address: patient.address,
+          dateofbirth: patient.dateofbirth,
+          city: patient['City.name'],
+          zip_code: patient['City.zip_code'],
+          gender: patient['Gender.name'],
+          language: patient['Language.name']
+        }));
+
+        console.log(remodeledPatients);
+        if (!remodeledPatients.length) {
           res.status(401).json({
             code: 401,
             message: 'Aucun patient n\'a été trouvé.'
           });
           return;
         }
-        const Patients = patients[0];
 
-        console.log(Patients);
-        res.status(200).json(patients);
+        const RemodeledPatients  = remodeledPatients[0];
+
+        res.status(200).json(RemodeledPatients);
       } catch (err) {
         console.error(`[ERROR] /patients -> ${err}`);
-
+  
         res.status(401).json({
           code: 401,
           message: 'Unauthorized'
@@ -96,6 +191,7 @@ const Patients = class Patients {
       }
     });
   }
+  
   // Méthode pour récupérer tous les patients
   getOnePatient = () => {
     this.app.get('/patient/:id', async (req, res) => {

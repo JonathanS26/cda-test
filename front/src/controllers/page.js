@@ -1,7 +1,7 @@
 import CookieJS from 'js-cookie';
 import 'startbootstrap-sb-admin-2/vendor/bootstrap/js/bootstrap.bundle';
 
-import ViewPage from '../views/page';
+import ViewPage from '../views/page'; // ViewPage = Page
 import sbAdmin2 from '../vendor/sb-admin-2';
 import { apiGetMe } from '../helpers';
 

@@ -11,6 +11,22 @@ const Auth = class Auth {
     this.app = app;
     this.authenticateToken = authenticateToken;
 
+    this.Role = connect.define('Role', {
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+      },
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false
+      }
+    }, {
+      timestamps: false,
+      createdAt: false,
+      updatedAt: false
+  });
+
     // Définir le modèle User avec les attributs de la table correspondante
     this.User = connect.define('User', {
       firstName: {
@@ -45,6 +61,9 @@ const Auth = class Auth {
         updatedAt: false
     });
 
+      // Définir l'association entre User et Role
+      this.User.belongsTo(this.Role, { foreignKey: 'id_role' });
+
     // Appeler la méthode run pour démarrer l'exécution des fonctionnalités d'authentification
     this.run();
   }
@@ -69,58 +88,76 @@ const Auth = class Auth {
   }
   
 
-  // Méthode pour gérer la demande de connexion (signin)
-  signin = () => {
-    // Définition de la route pour la demande de connexion (signin)
-    this.app.get('/auth/signin', async (req, res) => {
-      try {
-        // Récupérer l'email et le mot de passe depuis l'URL
-        const { email, password } = req.query;
-       
-        // Rechercher l'utilisateur dans la base de données avec l'email et le mot de passe correspondants
-        const user = await this.User.findAll({
-          where: {email, password},
-          raw: true // Récupérer les résultats sous forme d'objets JavaScript bruts
-        });
+// Méthode pour gérer la demande de connexion (signin)
+signin = () => {
+  // Définition de la route pour la demande de connexion (signin)
+  this.app.get('/auth/signin', async (req, res) => {
+    try {
+      // Récupérer l'email et le mot de passe depuis l'URL
+      const { email, password } = req.query;
 
-        // Vérifier si aucun utilisateur correspondant n'a été trouvé
-        if (!user.length) {
-          res.status(401).json({
-            code: 401,
-            message: 'Email ou mot de passe inconnu'
-          });
-          return;
-        }
-        console.log("user :");
-        console.log(user.length);
+      // Rechercher l'utilisateur dans la base de données avec l'email et le mot de passe correspondants
+      const user = await this.User.findAll({
+        attributes: ['firstname', 'lastname', 'email'],
+        include: [{
+          model: this.Role,
+          attributes: ['name'], // rename 'Role.name' to 'role'
+        }],
+        where: {
+          email: email,
+          password: password
+        },
+        raw: true
+      });
 
-        // Récupérer le premier utilisateur trouvé
-        const User  = user[0];
-
-        // Créer le jeton JWT avec les données de l'utilisateur
-        const token = jwt.sign({
-          firstName:  User.firstName,
-          lastName: User.lastName,
-          email: User.email,
-          role: User.role
-        }, 'J0n@thAn1', { expiresIn: '24h' });
-
-        // Envoyer le jeton JWT dans la réponse
-        res.status(200).json({
-          token
-        });
       
-      }  catch (err) {
-        // En cas d'erreur, renvoyer une réponse d'erreur
-        console.error(`[ERROR] auth/signin -> ${err}`);
+      // Remodeler les données retournées pour renommer "Role.name" en "role"
+      const remodeledUser = user.map(user => ({
+        firstname: user.firstname,
+        lastname: user.lastname,
+        email: user.email,
+        role: user['Role.name']
+      }));
 
+      console.log(remodeledUser);
+
+      // Vérifier si aucun utilisateur correspondant n'a été trouvé
+      if (!remodeledUser.length) {
         res.status(401).json({
           code: 401,
-          message: 'Unauthorized'
+          message: 'Email ou mot de passe inconnu'
         });
+        return;
       }
-    });
-  }
+
+      // Récupérer le premier utilisateur trouvé
+      const RemodeledUser  = remodeledUser[0];
+
+      // Créer le jeton JWT avec les données de l'utilisateur
+      const token = jwt.sign({
+        firstname:  RemodeledUser.firstname,
+        lastname: RemodeledUser.lastname,
+        email: RemodeledUser.email,
+        role: RemodeledUser.role
+      }, 'J0n@thAn1', { expiresIn: '24h' });
+
+      // Envoyer le jeton JWT dans la réponse
+      res.status(200).json({
+        token
+      });
+    
+    }  catch (err) {
+      // En cas d'erreur, renvoyer une réponse d'erreur
+      console.error(`[ERROR] auth/signin -> ${err}`);
+
+      res.status(401).json({
+        code: 401,
+        message: 'Unauthorized'
+      });
+    }
+  });
+}
+
 
   // Méthode pour exécuter les fonctionnalités d'authentification
   run () {
