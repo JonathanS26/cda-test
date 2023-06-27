@@ -21,6 +21,7 @@ const router = new Router({
   }
 });
 
+new Route('/',SignInController, ['public', '*'], router)
 new Route('/singin', SignInController, ['public', '*'], router);
 new Route('/singup', SingUpController, ['public', '*'], router);
 new Route('/dashboard', DashboardController, ['private', 'guest'], router);

@@ -1,15 +1,18 @@
+import axios from 'axios'; // Pour faire des requêtes HTTP.
+import CookieJS from 'js-cookie'; // Pour gérer les cookies.
 import validator from 'validator';
 import { displayErrorMessages } from '../helpers';
 import ViewSingUp from '../views/singup';
 
 const SingUp = class SingUp {
   constructor() {
+    console.log('singup :constructor');
     this.run();
   }
 
   checkForm(params, callback) {
+    console.log('checkForm', params, callback);
     const errors = [];
-
     if (validator.isEmpty(params.firstName)) {
       errors.push({ firstName: 'Veuillez entrer votre prénom' });
     }
@@ -33,8 +36,8 @@ const SingUp = class SingUp {
   }
 
   onHandleClick() {
-    const elForm = document.querySelector('form');
-    const elButton = document.querySelector('button');
+    const elForm = document.querySelector('#form-singup');
+    const elButton = document.querySelector('#form-singup button');
 
     elButton.addEventListener('click', (e) => {
       e.preventDefault();
@@ -49,7 +52,23 @@ const SingUp = class SingUp {
       };
 
       this.checkForm(params, (errors) => {
-        displayErrorMessages('#form-singup', errors);
+        if (errors.length > 0) {
+          displayErrorMessages('#form-singup', errors);
+        } else {
+          axios.post('http://localhost:3000/auth/signup', {
+            firstname: params.firstName,
+            lastname: params.lastName,
+            email: params.email,
+            password: params.password
+          })
+            .then((response) => {
+              CookieJS.set('jwtToken', response.data.token, { expires: 7 });
+              this.router.navigateTo('/singin');
+            })
+            .catch((error) => {
+              console.error('Une erreur est survenue lors de l\'inscription.', error);
+            });
+        }
       });
     });
   }

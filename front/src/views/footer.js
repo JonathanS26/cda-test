@@ -1,11 +1,9 @@
 const Footer = class Footer {
   render() {
     return `
-      <footer class="sticky-footer bg-white">
-        <div class="container my-auto">
-          <div class="copyright text-center my-auto">
-            <span>Copyright &copy; recoureo 2023 </span>
-          </div>
+      <footer class="footer mt-auto py-3 bg-light">
+        <div class="container text-center">
+          <span>Copyright &copy; jonathan 2023</span>
         </div>
       </footer>
     `;

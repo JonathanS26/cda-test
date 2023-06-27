@@ -1,17 +1,20 @@
 const Patient = class Patient {
   render() {
     return `
+  <div class="container my-5">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
       <h1 class="h3 mb-0 text-gray-800">Formulaire d'Inscription du Patient</h1>
     </div>
     <form id="form-patient">
-      <div class="form-group">
-        <label for="firstName">Prénom</label>
-        <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Prénom">
-      </div>
-      <div class="form-group">
-        <label for="lastName">Nom</label>
-        <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Nom" >
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="firstName">Prénom</label>
+          <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Prénom">
+        </div>
+        <div class="form-group col-md-6">
+          <label for="lastName">Nom</label>
+          <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Nom" >
+        </div>
       </div>
       <div class="form-group">
         <label for="email">Email</label>
@@ -25,17 +28,15 @@ const Patient = class Patient {
         <label for="address">Adresse</label>
         <input type="text" class="form-control" id="address" name="address" placeholder="Adresse" >
       </div>
-      <div class="form-group">
-        <label for="city">Ville</label>
-        <input type="text" class="form-control" id="city" name="city" placeholder="Ville" >
-      </div>
-      <div class="form-group">
-        <label for="zip">Code postal</label>
-        <input type="text" class="form-control" id="zip" name="zip" placeholder="Code postal" >
-      </div>
-      <div class="form-group">
-        <label for="language">Langue parlée</label>
-        <input type="text" class="form-control" id="language" name="language" placeholder="Langue parlée" >
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="city">Ville</label>
+          <input type="text" class="form-control" id="city" name="city" placeholder="Ville" >
+        </div>
+        <div class="form-group col-md-6">
+          <label for="zip">Code postal</label>
+          <input type="text" class="form-control" id="zip" name="zip" placeholder="Code postal" >
+        </div>
       </div>      
       <div class="form-group">
         <label for="dob">Date de naissance</label>
@@ -46,12 +47,12 @@ const Patient = class Patient {
         <select class="form-control" id="gender" name="gender">
           <option>Homme</option>
           <option>Femme</option>
-          <option>Autre</option>
         </select>
       </div>
-      <button type="submit" class="btn btn-primary">Inscrire</button>
+      <button class="btn btn-primary">Inscrire</button>
       <div class="errors-form text-danger pt-2"></div>
     </form>
+  </div>
         `;
   }
 };

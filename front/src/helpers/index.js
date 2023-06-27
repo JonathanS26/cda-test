@@ -1,5 +1,11 @@
-import DisplayErrorMessages from './display-error-messages';
-import ApiGetMe from './api-get-me';
+import { apiCreatePatient, apiUpdatePatient, apiDeletePatient } from './api-patient';
+import apiGetMe from './api-get-me';
+import displayErrorMessages from './display-error-messages';
 
-export const displayErrorMessages = DisplayErrorMessages;
-export const apiGetMe = ApiGetMe;
+export {
+    displayErrorMessages,
+    apiCreatePatient,
+    apiUpdatePatient,
+    apiDeletePatient,
+    apiGetMe
+};

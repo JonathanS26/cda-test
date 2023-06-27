@@ -3,12 +3,12 @@ import axios from 'axios';
 
 class Route {
   constructor(path, Controller, perm, router) {
-    this.path = path; // /dashboard
-    this.Controller = Controller; // DashboardController
-    const [status, role] = perm; // private, guest
-    this.status = status; // private
-    this.role = role; // guest
-    this.router = router; // router
+    this.path = path;
+    this.Controller = Controller;
+    const [status, role] = perm;
+    this.status = status;
+    this.role = role;
+    this.router = router;
     this.host = 'http://localhost:3000/';
 
     this.run();
@@ -41,8 +41,9 @@ class Route {
             }
             this.router.navigateTo('/dashboard');
           })
-          .catch(() => {
-            this.router.navigateTo('/singin');
+          .catch((error) => {
+            console.error('Erreur lors de la vérification de l\'authentification', error);
+            // this.router.navigateTo('/singin');
           });
       });
 

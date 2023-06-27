@@ -1,71 +1,42 @@
+// views/admin-patient.js
 const AdminPatients = class AdminPatients {
-  renderPatient(patients) {
-    const {
-      id,
-      firstname,
-      lastName,
-      cellPhone,
-      address,
-      dateofbirth,
-      city,
-      zip_code,
-      gender,
-      language
-    } = patients;
-
+  render(patients) {
     return `
-      <tr>
-        <td>${id}</td>
-        <td>${firstname}</td>
-        <td>${lastName}</td>
-        <td>${cellPhone}</td>
-        <td>${address}</td>
-        <td>${dateofbirth}</td>
-        <td>${city}</td>
-        <td>${zip_code}</td>
-        <td>${gender}</td>
-        <td>${language}</td>
-        <td>
-          <div class="d-grid gap-2">
-            <button class="btn btn-danger" type="button">Supprimer</button>
-          </div>
-        </td>
-        <td>
-          <div class="d-grid gap-2">
-            <button class="btn btn-warning" type="button">Editer</button>
-          </div>
-        </td>
-      </tr>
-    `;
-  }
-
-  render(datas) {
-    console.log("edd")
-    return `
-      <div class="row">
-      <div class="table-responsive">
-        <table class="table table-dark table-striped">
+      <div class="container my-5">
+        <div class="d-flex justify-content-between align-items-center">
+          <h1 class="h3 mb-3 text-gray-800">Liste des patients</h1>
+          <a href="patient.php" class="btn btn-primary">Ajouter un patient</a>
+        </div>
+        <table class="table table-striped mt-3">
           <thead>
             <tr>
-              <th scope="col">Id</th>
+              <th scope="col">#</th>
               <th scope="col">Prénom</th>
               <th scope="col">Nom</th>
-              <th scope="col">Numéro de téléphone</th>
+              <th scope="col">Email</th>
+              <th scope="col">Téléphone</th>
               <th scope="col">Adresse</th>
-              <th scope="col">Date de naissance</th>
-              <th scope="col">Ville</th>
-              <th scope="col">Code postal</th>
-              <th scope="col">Genre</th>
-              <th scope="col">Langue</th>
-              <th></th>
-              <th></th>
+              <th scope="col">Actions</th>
             </tr>
           </thead>
           <tbody>
-            ${datas.map((patients) => this.renderPatient(patients)).join('')}
+            ${patients.map((patient, index) => `
+              <tr>
+                <th scope="row">${index + 1}</th>
+                <td>${patient.firstname}</td>
+                <td>${patient.lastname}</td>
+                <td>${patient.email}</td>
+                <td>${patient.cellphone}</td>
+                <td>${patient.address}</td>
+                <td>
+                  <a href="#" class="btn btn-success btn-sm">Voir</a>
+                  <a href="#" class="btn btn-info btn-sm">Modifier</a>
+                  <a href="#" class="btn btn-danger btn-sm">Supprimer</a>
+                </td>
+              </tr>
+            `).join('')}
           </tbody>
         </table>
-        </div>
       </div>
     `;
   }

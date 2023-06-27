@@ -1,18 +1,24 @@
 import { DataTypes } from 'sequelize';
-import { sequelize } from '../config/database';
 
-const Role = sequelize.define('Role', {
+export default (sequelize) => {
+  const Role = sequelize.define('Role', {
   id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
   },
   name: {
-    type: DataTypes.STRING,
-    allowNull: true
+      type: DataTypes.STRING,
+      allowNull: true
   }
-}, {
+  }, {
   tableName: 'roles',
   timestamps: false
-});
+  });
 
-export default Role;
+  Role.associate = (models) => {
+    Role.hasMany(models.User, { foreignKey: 'id_role', as: 'users' });
+  };  
+
+  return Role;
+};

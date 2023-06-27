@@ -5,6 +5,7 @@ import ViewAdminPatients from '../views/admin-patients';
 
 const AdminPatients = class AdminPatients {
   constructor() {
+    console.log('admin-patients');
     this.run();
   }
 
@@ -12,17 +13,22 @@ const AdminPatients = class AdminPatients {
     const host = 'http://localhost:3000/';
     axios.get(`${host}patients`)
       .then((response) => {
-        console.log(response)
-        callback(response.data);
+        const patients = response.data.map((patient) => ({
+          firstname: patient.firstname,
+          lastname: patient.lastname,
+          email: patient.email,
+          cellphone: patient.cellphone,
+          address: patient.address
+        }));
+        callback(patients);
       })
       .catch((error) => {
-        console.log("axios catch")
+        console.log('axios catch');
         console.log(error);
       });
   }
 
   run() {
-
     this.getAll((patients) => {
       const viewAdminPatients = new ViewAdminPatients();
       new ControllerPage(viewAdminPatients.render(patients));

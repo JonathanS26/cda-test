@@ -4,24 +4,21 @@ import Footer from './footer';
 
 const Page = class Page {
   constructor(data) {
-    const { header } = data;
-
-    this.header = header;
+    this.headerData = data.header;
+    this.header = new Header();
+    this.nav = new Nav();
+    this.footer = new Footer();
   }
 
   render(content) {
     return `
-      <div id="wrapper">
-        ${new Nav().render()}
-        <div id="content-wrapper" class="d-flex flex-column">
-          <div id="content">
-            ${new Header().render(this.header)}
-            <div class="m-5">
-              ${content}
-            </div>
-            ${new Footer().render()}
-          </div>
-        </div>
+      <div class="d-flex flex-column min-vh-100">
+        ${this.header.render(this.headerData)}
+        ${this.nav.render()}
+        <main class="container flex-grow-1">
+          ${content}
+        </main>
+        ${this.footer.render()}
       </div>
     `;
   }

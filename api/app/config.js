@@ -7,7 +7,7 @@ export default {
       port: 3306,
       username: 'user',
       password: 'password',
-      database: 'cda'
+      database: 'tessr'
     }
   },
   production: {

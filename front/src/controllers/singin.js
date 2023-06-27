@@ -33,9 +33,10 @@ const SignIn = class SignIn {
 
   // Méthode pour gérer l'événement de clic sur le bouton de soumission du formulaire.
   onHandleClick() {
-    const elForm = document.querySelector('form');
-    const elButton = document.querySelector('button');
+    const elForm = document.querySelector('#form-singin');
+    const elButton = document.querySelector('#form-singin button');
 
+    console.log(document.querySelector('#form-singin'));
     elButton.addEventListener('click', (e) => {
       e.preventDefault();
 
@@ -45,15 +46,22 @@ const SignIn = class SignIn {
         email: formData[0][1],
         password: formData[1][1]
       };
+      console.log('onHandleClick');
+      console.log(formData);
+      console.log(params);
 
       // Vérifie les données du formulaire.
       this.checkForm(params, (errors) => {
         if (errors.length > 0) {
+          console.log(errors);
           // Si des erreurs sont détectées, elles sont affichées.
           displayErrorMessages('#form-singin', errors);
         } else {
           // Si aucune erreur n'est détectée, une requête HTTP est envoyée pour se connecter.
-          axios.get(`http://localhost:3000/auth/signin?email=${params.email}&password=${params.password}`)
+          axios.post('http://localhost:3000/auth/signin', {
+            email: params.email,
+            password: params.password
+          })
             .then((response) => {
               // Si la requête réussit, le token JWT est récupéré et stocké dans un cookie.
               const { token } = response.data;

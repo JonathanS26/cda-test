@@ -1,10 +1,11 @@
 import validator from 'validator';
-import { displayErrorMessages } from '../helpers';
+import { displayErrorMessages, apiCreatePatient, apiUpdatePatient, apiDeletePatient } from '../helpers';
 import ControllerPage from './page';
 import ViewPatient from '../views/patient';
 
 const Patient = class Patient {
   constructor() {
+    console.log('constructPatient');
     this.run();
   }
 
@@ -30,15 +31,6 @@ const Patient = class Patient {
       errors.push({ email: 'Veuillez entrer le NIR' });
     } else if (!validator.isEmail(params.email)) {
       errors.push({ email: 'Veuillez entrer un email valide' });
-    }
-
-    // Téléphone fixe
-    if (validator.isEmpty(params.phone)) {
-      errors.push({ phone: 'Veuillez entrer le numéro de téléphone fixe' });
-    } else if (!validator.isMobilePhone(params.phone, ['fr-FR'])) {
-      errors.push({ phone: 'Veuillez entrer un numéro de téléphone fixe valide' });
-    } else if (params.phone.length !== 10) {
-      errors.push({ phone: 'Veuillez entrer un numéro de téléphone fixe valide' });
     }
 
     // Téléphone portable
@@ -67,11 +59,6 @@ const Patient = class Patient {
       errors.push({ zip: 'Veuillez entrer un code postal valide' });
     }
 
-    // Langue parlée
-    if (validator.isEmpty(params.language)) {
-      errors.push({ language: 'Veuillez indiquer la langue parlée' });
-    }
-
     // Date de naissance
     if (validator.isEmpty(params.dob)) {
       errors.push({ dob: 'Veuillez entrer la date de naissance' });
@@ -86,32 +73,13 @@ const Patient = class Patient {
       errors.push({ gender: 'Valeur de genre non valide' });
     }
 
-    // NIR
-    if (validator.isEmpty(params.nir)) {
-      errors.push({ nir: 'Veuillez entrer le NIR' });
-    } else if (!validator.isNumeric(params.nir) || params.nir.length !== 15) {
-      errors.push({ nir: 'Le NIR doit contenir exactement 15 chiffres' });
-    }
-
-    // Régime d'assurance
-    if (validator.isEmpty(params.insuranceRegime)) {
-      errors.push({ insuranceRegime: 'Veuillez sélectionner le régime d\'assurance' });
-    } else if (!['Régime général', 'Régime agricole', 'Ampi', 'Sncf', 'Mgen', 'Cmmns'].includes(params.insuranceRegime)) {
-      errors.push({ insuranceRegime: 'Valeur de régime d\'assurance non valide' });
-    }
-
-    // Type d'accident
-    if (validator.isEmpty(params.accidentType)) {
-      errors.push({ accidentType: 'Veuillez sélectionner le type d\'accident' });
-    } else if (!['Accident de la route', 'Accident piéton', 'Accident médical', 'Accident du travail', 'Accident du sport', 'Accident de la vie', 'Agression', 'Maltraitance'].includes(params.accidentType)) {
-      errors.push({ accidentType: 'Valeur de type d\'accident non valide' });
-    }
-
     callback(errors);
   }
 
   onHandleClick() {
+    console.log('onHandle');
     const elForm = document.querySelector('#form-patient');
+    console.log(document.querySelector('#form-patient'))
     const elButton = document.querySelector('#form-patient button');
 
     elButton.addEventListener('click', (e) => {
@@ -122,29 +90,87 @@ const Patient = class Patient {
         lastName: formData[0][1],
         firstName: formData[1][1],
         email: formData[2][1],
-        phone: formData[3][1],
-        cellphone: formData[4][1],
-        address: formData[5][1],
-        city: formData[6][1],
-        zip: formData[7][1],
-        language: formData[8][1],
-        dob: formData[9][1],
-        gender: formData[10][1],
-        nir: formData[11][1],
-        insuranceRegime: formData[12][1],
-        accidentType: formData[13][1]
-
+        cellphone: formData[3][1],
+        address: formData[4][1],
+        city: formData[5][1],
+        zip: formData[6][1],
+        dob: formData[7][1],
+        gender: formData[8][1]
       };
+      console.log(formData);
       this.checkForm(params, (errors) => {
-        displayErrorMessages('#form-patient', errors);
+        if (errors.length === 0) {
+          apiCreatePatient(params, (responce) => {
+            if (responce.success) {
+              // redirigez vers la page de la liste des patients ou affichez un message de réussite
+              window.location.href = '/patient';
+            } else {
+              console.error(response.message); 
+              // Pour afficher l'erreur dans l'interface utilisateur, vous pouvez par exemple modifier le contenu d'un élément HTML :
+              document.getElementById('errorMessage').textContent = response.message;
+
+            }
+          });
+        } else {
+          displayErrorMessages('#form-patient', errors);
+        }
       });
+    });
+  }
+
+  onUpdateClick(id) {
+    const elForm = document.querySelector('#form-patient');
+    const elButton = document.querySelector(`#update-patient-${id}`);
+  
+    elButton.addEventListener('click', (e) => {
+      e.preventDefault();
+  
+      const formData = Array.from(new FormData(elForm));
+      const params = {
+        // Collectez les données du formulaire ici, comme vous le faites dans onHandleClick
+      };
+  
+      this.checkForm(params, (errors) => {
+        if (errors.length === 0) {
+          apiUpdatePatient(id, params, (response) => {
+            if (response.success) {
+              // redirigez vers la page de la liste des patients ou affichez un message de réussite
+              window.location.href = '/patient';
+            } else {
+              // affichez les erreurs renvoyées par l'API
+            }
+          });
+        } else {
+          displayErrorMessages(`#form-patient-${id}`, errors);
+        }
+      });
+    });
+  }
+  
+  onDeleteClick(id) {
+    const elButton = document.querySelector(`#delete-patient-${id}`);
+  
+    elButton.addEventListener('click', (e) => {
+      e.preventDefault();
+  
+      // Confirmez que l'utilisateur veut vraiment supprimer le patient...
+      const confirmDelete = window.confirm("Êtes-vous sûr de vouloir supprimer ce patient ?");
+      if (confirmDelete) {
+        apiDeletePatient(id, (response) => {
+          if (response.success) {
+            // redirigez vers la page de la liste des patients ou affichez un message de réussite
+            window.location.href = '/patient';
+          } else {
+            // affichez les erreurs renvoyées par l'API
+          }
+        });
+      }
     });
   }
 
   run() {
     const viewPatient = new ViewPatient();
     new ControllerPage(viewPatient.render());
-
     this.onHandleClick();
   }
 };

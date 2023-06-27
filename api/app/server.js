@@ -1,3 +1,10 @@
+// Importation des modèles
+import CityModel from './models/city.js';
+import GenderModel from './models/gender.js';
+import PatientModel from './models/patient.js';
+import RoleModel from './models/role.js';
+import UserModel from './models/user.js';
+
 // Dependencies
 import express from 'express';
 import Sequelize from 'sequelize';
@@ -21,11 +28,28 @@ const Server = class Server {
 
   dbConnect() {
     const { mysql } = this.config;
-    return new Sequelize(mysql.database, mysql.username, mysql.password, {
+    const sequelize =  new Sequelize(mysql.database, mysql.username, mysql.password, {
       host: mysql.host,
       dialect: 'mysql',
       port: mysql.port
     });
+
+    // Initialisation des modèles
+    const City = CityModel(sequelize);
+    const Gender = GenderModel(sequelize);
+    const Patient = PatientModel(sequelize);
+    const Role = RoleModel(sequelize);
+    const User = UserModel(sequelize);
+  
+    // Execution des associations
+    Object.values(sequelize.models)
+    .filter(model => typeof model.associate === "function")
+    .forEach(model => model.associate(sequelize.models));
+
+    return sequelize;
+
+  
+
   }
 
   middleware () {
@@ -56,9 +80,9 @@ const Server = class Server {
     this.app.disable('x-powered-by');
   }
 
-  run () {
+  async run () {
     try {
-      this.connect = this.dbConnect();
+      this.connect = await this.dbConnect();
       this.security();
       this.middleware();
       this.routes();
